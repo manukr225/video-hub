@@ -145,6 +145,12 @@
         videoId: "RDUdsO4SM4wKI"
       },
       {
+        id: 'yt_playlist1',
+        title: "My YouTube Playlist",
+        type: "youtube_playlist",
+        playlistId: "RDUdsO4SM4wKI"
+      },
+      {
         id: 'rumble1',
         title: "elio 2025 hindi",
         type: "rumble",
@@ -152,9 +158,12 @@
       }
     ];
 
-    function getThumbnail(type, videoId) {
+    function getThumbnail(type, videoId, playlistId) {
       if (type === "youtube") {
         return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      } else if (type === "youtube_playlist") {
+        // Use the first video thumbnail in the playlist, or a custom image
+        return `https://img.youtube.com/vi/UdsO4SM4wKI/hqdefault.jpg`;
       } else if (type === "dailymotion") {
         return `https://www.dailymotion.com/thumbnail/video/${videoId}`;
       } else if (type === "rumble") {
@@ -164,9 +173,11 @@
       return "";
     }
 
-    function getEmbed(type, videoId) {
+    function getEmbed(type, videoId, playlistId) {
       if (type === "youtube") {
         return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
+      } else if (type === "youtube_playlist") {
+        return `<iframe class="video-frame" src="https://www.youtube.com/embed?listType=playlist&list=${playlistId}&autoplay=1" allowfullscreen></iframe>`;
       } else if (type === "dailymotion") {
         return `<iframe class="video-frame" src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" allowfullscreen></iframe>`;
       } else if (type === "rumble") {
@@ -186,15 +197,14 @@
         card.dataset.videoId = video.id;
         if (activeId === video.id) {
           // Show embedded player
-          card.innerHTML = getEmbed(video.type, video.videoId) +
+          card.innerHTML = getEmbed(video.type, video.videoId, video.playlistId) +
             `<div class="video-info">
               <h4 class="video-title">${video.title}</h4>
             </div>`;
         } else {
-          // Show thumbnail
           card.innerHTML = `
             <div class="thumbnail-container">
-              <img src="${getThumbnail(video.type, video.videoId)}" alt="${video.title}" class="video-thumbnail"/>
+              <img src="${getThumbnail(video.type, video.videoId, video.playlistId)}" alt="${video.title}" class="video-thumbnail"/>
               <div class="play-button">&#9658;</div>
             </div>
             <div class="video-info">
