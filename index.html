@@ -1,293 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StreamSeva - Video Hub</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      color: #00ffff;
-      margin-bottom: 10px;
-    }
-    .video-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .video-card {
-      width: 320px;
-      background: #222;
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      transition: transform .2s;
-      cursor: pointer;
-      position: relative;
-    }
-    .video-card:hover {
-      transform: scale(1.04);
-      box-shadow: 0 4px 16px rgba(0,255,255,0.3);
-    }
-    .thumbnail-container {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      overflow: hidden;
-      background: #000;
-    }
-    .video-thumbnail {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 48px;
-      color: rgba(255,255,255,0.9);
-      background: rgba(0,0,0,0.3);
-      border-radius: 50%;
-      padding: 8px 16px;
-      pointer-events: none;
-    }
-    .video-info {
-      padding: 12px;
-      color: #fff;
-      text-align: left;
-      min-height: 48px;
-    }
-    .video-title {
-      margin: 0;
-      font-size: 1.08em;
-      font-weight: 600;
-      text-align: left;
-      color: #00ffff;
-    }
-    .video-frame {
-      width: 100%;
-      height: 180px;
-      border: none;
-      border-radius: 0;
-      display: block;
-      background: #000;
-    }
-    footer {
-      margin-top: 50px;
-      font-size: 14px;
-      color: #aaa;
-    }
-  </style>
-  <!-- hls.js for HLS playback in all browsers -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <!-- dash.js for DASH playback -->
-  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StreamSeva - Video Hub</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+h1 {
+  color: #00ffff;
+  margin-bottom: 10px;
+}
+.video-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+.video-card {
+  width: 320px;
+  background: #222;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform .2s;
+  cursor: pointer;
+  position: relative;
+}
+.video-card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(0,255,255,0.3);
+}
+.thumbnail-container {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #000;
+}
+.video-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: rgba(255,255,255,0.9);
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  padding: 8px 16px;
+  pointer-events: none;
+}
+.video-info {
+  padding: 12px;
+  color: #fff;
+  text-align: left;
+  min-height: 48px;
+}
+.video-title {
+  margin: 0;
+  font-size: 1.08em;
+  font-weight: 600;
+  text-align: left;
+  color: #00ffff;
+}
+.video-frame {
+  width: 100%;
+  height: 180px;
+  border: none;
+  border-radius: 0;
+  display: block;
+  background: #000;
+}
+footer {
+  margin-top: 50px;
+  font-size: 14px;
+  color: #aaa;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
 </head>
 <body>
 
-  <h1>🎬 StreamSeva - Video Hub</h1>
-  <p>Enjoy streaming curated videos right here!</p>
+<h1>🎬 StreamSeva - Video Hub</h1>
+<p>Enjoy streaming curated videos right here!</p>
 
-  <div class="video-container" id="videoContainer">
-    <!-- Video cards will be injected by JavaScript -->
-  </div>
+<div class="video-container" id="videoContainer">
+<!-- Video cards will be injected by JavaScript -->
+</div>
 
-  <footer>
-    © 2025 StreamSeva. All rights reserved.
-  </footer>
+<footer>
+© 2025 StreamSeva. All rights reserved.
+</footer>
 
-  <script>
-    // Video data array
-    const videos = [
-      {
-        id: 'yt1',
-        title: "SANGING DISOM P",
-        type: "youtube",
-        videoId: "Szx5d2DnOTw"
-      },
-      {
-        id: 'dm1',
-        title: "Aaj ki raat",
-        type: "dailymotion",
-        videoId: "x9a13d8"
-      },
-      {
-        id: 'yt2',
-        title: "ESEL JOHA | FULL VIDEO",
-        type: "youtube",
-        videoId: "UIjOVA1GPrc"
-      },
-      {
-        id: 'yt3',
-        title: "O Sanam Teri Kasam",
-        type: "youtube",
-        videoId: "i9F2eGpdm9E"
-      },
-      {
-        id: 'yt4',
-        title: "aura of titans 2025",
-        type: "youtube",
-        videoId: "WAUB0tzBIF4"
-      },
-      {
-        id: 'yt5',
-        title: "O Sanam Teri Kasam Playlist",
-        type: "youtube_playlist",
-        playlistId: "RDi9F2eGpdm9E"
-      },
-      {
-        id: 'yt_playlist1',
-        title: "My YouTube Playlist",
-        type: "youtube_playlist",
-        playlistId: "RDRaMkydjJQvY"
-      },
-      {
-        id: 'yt_playlist2',
-        title: "UdsO4SM4wKI Playlist",
-        type: "youtube_playlist",
-        playlistId: "RDUdsO4SM4wKI"
-      },
-      {
-        id: 'rumble1',
-        title: "elio 2025 hindi",
-        type: "rumble",
-        videoId: "v6v3x6g"
-      },
-      {
-        id: 'hls1',
-        title: "bawaal",
-        type: "hls",
-        videoSrc: "https://cdn30093.lefig371jos.com/stream2/i-arch-400/134f3f46783ad768392f05a28a993633/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21UbFhXTEJ0aZRlTr5UbNRTWX5EbOpmVqllMFFzTEVFMNJTS55keGpWTEVVP:1754670083:152.59.142.105:5112de89965f639cec483c3f5f0e8e74bc54bacfe82d590d813cf01f769053be/index.m3u8"
-      },
-      {
-        id: 'dash1',
-        title: "Star Plus HD Live (DASH)",
-        type: "dash",
-        videoSrc: "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Plus_HD_BTS/output/dash/Star_Plus_HD_BTS-video=3724000-1052783415005.dash?__hdnea__=st=1754619743~exp=1754706143~acl=/*~hmac=d994beb0326a9f6af4460821a84b3f7b9c582459d0c7e0cd5a7f63159941fd09"
-      }
-    ];
+<script>
+// Video data array
+const videos = [
+  {
+    id: 'yt1',
+    title: "SANGING DISOM P",
+    type: "youtube",
+    videoId: "Szx5d2DnOTw"
+  },
+  {
+    id: 'dm1',
+    title: "Aaj ki raat",
+    type: "dailymotion",
+    videoId: "x9a13d8"
+  },
+  {
+    id: 'yt2',
+    title: "ESEL JOHA | FULL VIDEO",
+    type: "youtube",
+    videoId: "UIjOVA1GPrc"
+  },
+  {
+    id: 'yt3',
+    title: "O Sanam Teri Kasam",
+    type: "youtube",
+    videoId: "i9F2eGpdm9E"
+  },
+  {
+    id: 'yt4',
+    title: "aura of titans 2025",
+    type: "youtube",
+    videoId: "WAUB0tzBIF4"
+  },
+  {
+    id: 'yt5',
+    title: "O Sanam Teri Kasam Playlist",
+    type: "youtube_playlist",
+    playlistId: "RDi9F2eGpdm9E"
+  },
+  {
+    id: 'yt_playlist1',
+    title: "My YouTube Playlist",
+    type: "youtube_playlist",
+    playlistId: "RDRaMkydjJQvY"
+  },
+  {
+    id: 'rumble1',
+    title: "elio 2025 hindi",
+    type: "rumble",
+    videoId: "v6v3x6g"
+  },
+  {
+    id: 'hls1',
+    title: "bawaal",
+    type: "hls",
+    videoSrc: "https://cdn30093.lefig371jos.com/stream2/i-arch-400/134f3f46783ad768392f05a28a993633/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21UbFhXTEJ0aZRlTr5UbNRTWX5EbOpmVqllMFFzTEVFMNJTS55keGpWTEVVP:1754670083:152.59.142.105:5112de89965f639cec483c3f5f0e8e74bc54bacfe82d590d813cf01f769053be/index.m3u8"
+  },
+  {
+    id: 'dash1',
+    title: "Star Plus HD Live (DASH)",
+    type: "dash",
+    videoSrc: "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Plus_HD_BTS/output/dash/Star_Plus_HD_BTS-video=3724000-1052783415005.dash?__hdnea__=st=1754619743~exp=1754706143~acl=/*~hmac=d994beb0326a9f6af4460821a84b3f7b9c582459d0c7e0cd5a7f63159941fd09",
+    thumbnail: "https://via.placeholder.com/320x180?text=Star+Plus+HD+Live"
+  }
+];
 
-    function getThumbnail(type, videoId, playlistId, thumbnail) {
-      if (thumbnail) return thumbnail;
-      if (type === "youtube") {
-        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      } else if (type === "youtube_playlist") {
-        // Use the first video thumbnail in the playlist, or a custom image
-        return `https://img.youtube.com/vi/i9F2eGpdm9E/hqdefault.jpg`;
-      } else if (type === "dailymotion") {
-        return `https://www.dailymotion.com/thumbnail/video/${videoId}`;
-      } else if (type === "rumble") {
-        // Rumble doesn't provide a public thumbnail API, use a placeholder or custom image
-        return "https://via.placeholder.com/320x180?text=Rumble";
-      } else if (type === "hls") {
-        // Use a custom image or HLS placeholder
-        return "https://via.placeholder.com/320x180?text=Live+HLS";
-      } else if (type === "dash") {
-        // Use a custom image or DASH placeholder
-        return "https://via.placeholder.com/320x180?text=Live+DASH";
-      }
-      return "";
-    }
+function getThumbnail(type, videoId, playlistId, thumbnail) {
+  if (thumbnail) return thumbnail;
+  if (type === "youtube") {
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  } else if (type === "youtube_playlist") {
+    // Use the first video thumbnail in the playlist, or a custom image
+    return `https://img.youtube.com/vi/i9F2eGpdm9E/hqdefault.jpg`;
+  } else if (type === "dailymotion") {
+    return `https://www.dailymotion.com/thumbnail/video/${videoId}`;
+  } else if (type === "rumble") {
+    // Rumble doesn't provide a public thumbnail API, use a placeholder or custom image
+    return "https://via.placeholder.com/320x180?text=Rumble";
+  } else if (type === "hls") {
+    // Use a custom image or HLS placeholder
+    return "https://via.placeholder.com/320x180?text=Live+HLS";
+  } else if (type === "dash") {
+    // Use a custom image or DASH placeholder
+    return "https://via.placeholder.com/320x180?text=Live+DASH";
+  }
+  return "";
+}
 
-    function getEmbed(type, videoId, playlistId, videoSrc, uniqueId) {
-      if (type === "youtube") {
-        return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
-      } else if (type === "youtube_playlist") {
-        return `<iframe class="video-frame" src="https://www.youtube.com/embed?listType=playlist&list=${playlistId}&autoplay=1" allowfullscreen></iframe>`;
-      } else if (type === "dailymotion") {
-        return `<iframe class="video-frame" src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" allowfullscreen></iframe>`;
-      } else if (type === "rumble") {
-        return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
-      } else if (type === "hls") {
-        // Unique id for HLS video (in case of multiple HLS videos)
-        const hlsId = `hls-video-${uniqueId}`;
-        setTimeout(() => {
-          var video = document.getElementById(hlsId);
-          if (video) {
-            if (window.Hls && Hls.isSupported()) {
-              var hls = new Hls();
-              hls.loadSource(videoSrc);
-              hls.attachMedia(video);
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-              video.src = videoSrc;
-            }
-          }
-        }, 0);
-        return `<video id="${hlsId}" class="video-frame" controls autoplay></video>`;
-      } else if (type === "dash") {
-        // Unique id for DASH video (in case of multiple DASH videos)
-        const dashId = `dash-video-${uniqueId}`;
-        setTimeout(() => {
-          var video = document.getElementById(dashId);
-          // Destroy any existing dash.js player instance
-          if (video && video._dashPlayer && typeof video._dashPlayer.reset === "function") {
-            video._dashPlayer.reset();
-            video._dashPlayer = null;
-          }
-          if (video && window.dashjs) {
-            var player = dashjs.MediaPlayer().create();
-            player.initialize(video, videoSrc, true);
-            video._dashPlayer = player;
-          }
-        }, 0);
-        return `<video id="${dashId}" class="video-frame" controls autoplay></video>`;
-      }
-      return "";
-    }
-
-    const videoContainer = document.getElementById('videoContainer');
-
-    // Render video cards
-    function renderVideos(activeId = null) {
-      videoContainer.innerHTML = '';
-      videos.forEach((video, idx) => {
-        const card = document.createElement('div');
-        card.className = 'video-card';
-        card.dataset.videoId = video.id;
-        if (activeId === video.id) {
-          // Show embedded player
-          card.innerHTML = getEmbed(
-            video.type,
-            video.videoId,
-            video.playlistId,
-            video.videoSrc,
-            idx // uniqueId for HLS/DASH
-          ) +
-            `<div class="video-info">
-              <h4 class="video-title">${video.title}</h4>
-            </div>`;
-        } else {
-          card.innerHTML = `
-            <div class="thumbnail-container">
-              <img src="${getThumbnail(video.type, video.videoId, video.playlistId, video.thumbnail)}" alt="${video.title}" class="video-thumbnail"/>
-              <div class="play-button">&#9658;</div>
-            </div>
-            <div class="video-info">
-              <h4 class="video-title">${video.title}</h4>
-            </div>
-          `;
-          card.addEventListener('click', () => renderVideos(video.id));
+function getEmbed(type, videoId, playlistId, videoSrc, uniqueId, thumbnail) {
+  if (type === "youtube") {
+    return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
+  } else if (type === "youtube_playlist") {
+    return `<iframe class="video-frame" src="https://www.youtube.com/embed?listType=playlist&list=${playlistId}&autoplay=1" allowfullscreen></iframe>`;
+  } else if (type === "dailymotion") {
+    return `<iframe class="video-frame" src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" allowfullscreen></iframe>`;
+  } else if (type === "rumble") {
+    return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
+  } else if (type === "hls") {
+    // Unique id for HLS video (in case of multiple HLS videos)
+    const hlsId = `hls-video-${uniqueId}`;
+    setTimeout(() => {
+      var video = document.getElementById(hlsId);
+      if (video) {
+        if (window.Hls && Hls.isSupported()) {
+          var hls = new Hls();
+          hls.loadSource(videoSrc);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = videoSrc;
         }
-        videoContainer.appendChild(card);
-      });
-    }
+      }
+    }, 0);
+    return `<video id="${hlsId}" class="video-frame" controls autoplay poster="${thumbnail || ''}"></video>`;
+  } else if (type === "dash") {
+    // Unique id for DASH video (in case of multiple DASH videos)
+    const shakaId = `shaka-video-${uniqueId}`;
+    setTimeout(() => {
+      const video = document.getElementById(shakaId);
+      if (video) {
+        if (video._shakaPlayer) {
+          video._shakaPlayer.destroy();
+          video._shakaPlayer = null;
+        }
+        const player = new shaka.Player(video);
+        video._shakaPlayer = player;
+        player.load(videoSrc).catch(e => console.error(e));
+      }
+    }, 0);
+    return `<video id="${shakaId}" class="video-frame" controls autoplay poster="${thumbnail || ''}"></video>`;
+  }
+  return "";
+}
 
-    // Initial render
-    renderVideos();
-  </script>
+const videoContainer = document.getElementById('videoContainer');
+
+// Render video cards
+function renderVideos(activeId = null) {
+  videoContainer.innerHTML = '';
+  videos.forEach((video, idx) => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.dataset.videoId = video.id;
+    if (activeId === video.id) {
+      // Show embedded player
+      card.innerHTML = getEmbed(
+        video.type,
+        video.videoId,
+        video.playlistId,
+        video.videoSrc,
+        idx,
+        video.thumbnail
+      ) +
+      `<div class="video-info">
+        <h4 class="video-title">${video.title}</h4>
+      </div>`;
+    } else {
+      card.innerHTML = `
+        <div class="thumbnail-container">
+          <img src="${getThumbnail(video.type, video.videoId, video.playlistId, video.thumbnail)}" alt="${video.title}" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">${video.title}</h4>
+        </div>
+      `;
+      card.addEventListener('click', () => renderVideos(video.id));
+    }
+    videoContainer.appendChild(card);
+  });
+}
+
+// Initial render
+renderVideos();
+</script>
 </body>
 </html>
