@@ -91,7 +91,10 @@
       color: #aaa;
     }
   </style>
+  <!-- hls.js for HLS playback in all browsers -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- dash.js for DASH playback -->
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 </head>
 <body>
 
@@ -148,7 +151,7 @@
       {
         id: 'yt_playlist1',
         title: "My YouTube Playlist",
-        type: "youtube_playlist1",
+        type: "youtube_playlist",
         playlistId: "RDRaMkydjJQvY"
       },
       {
@@ -162,10 +165,18 @@
         title: "bawaal",
         type: "hls",
         videoSrc: "https://cdn30093.lefig371jos.com/stream2/i-arch-400/134f3f46783ad768392f05a28a993633/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21UbFhXTEJ0aZRlTr5UbNRTWX5EbOpmVqllMFFzTEVFMNJTS55keGpWTEVVP:1754670083:152.59.142.105:5112de89965f639cec483c3f5f0e8e74bc54bacfe82d590d813cf01f769053be/index.m3u8"
+      },
+      {
+        id: 'dash1',
+        title: "Star Plus HD Live (DASH)",
+        type: "dash",
+        videoSrc: "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Plus_HD_BTS/output/dash/Star_Plus_HD_BTS-video=3724000-1052783415005.dash?__hdnea__=st=1754619743~exp=1754706143~acl=/*~hmac=d994beb0326a9f6af4460821a84b3f7b9c582459d0c7e0cd5a7f63159941fd09",
+        thumbnail: "https://via.placeholder.com/320x180?text=Star+Plus+HD+Live" // You can use a custom image link here
       }
     ];
 
-    function getThumbnail(type, videoId, playlistId) {
+    function getThumbnail(type, videoId, playlistId, thumbnail) {
+      if (thumbnail) return thumbnail;
       if (type === "youtube") {
         return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
       } else if (type === "youtube_playlist") {
@@ -179,6 +190,9 @@
       } else if (type === "hls") {
         // Use a custom image or HLS placeholder
         return "https://via.placeholder.com/320x180?text=Live+HLS";
+      } else if (type === "dash") {
+        // Use a custom image or DASH placeholder
+        return "https://via.placeholder.com/320x180?text=Live+DASH";
       }
       return "";
     }
@@ -208,6 +222,17 @@
           }
         }, 0);
         return `<video id="${hlsId}" class="video-frame" controls autoplay></video>`;
+      } else if (type === "dash") {
+        // Unique id for DASH video (in case of multiple DASH videos)
+        const dashId = "dash-video";
+        setTimeout(() => {
+          var video = document.getElementById(dashId);
+          if (video && window.dashjs) {
+            var player = dashjs.MediaPlayer().create();
+            player.initialize(video, videoSrc, true);
+          }
+        }, 0);
+        return `<video id="${dashId}" class="video-frame" controls autoplay></video>`;
       }
       return "";
     }
@@ -235,7 +260,7 @@
         } else {
           card.innerHTML = `
             <div class="thumbnail-container">
-              <img src="${getThumbnail(video.type, video.videoId, video.playlistId)}" alt="${video.title}" class="video-thumbnail"/>
+              <img src="${getThumbnail(video.type, video.videoId, video.playlistId, video.thumbnail)}" alt="${video.title}" class="video-thumbnail"/>
               <div class="play-button">&#9658;</div>
             </div>
             <div class="video-info">
