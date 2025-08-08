@@ -91,6 +91,8 @@
       color: #aaa;
     }
   </style>
+  <!-- hls.js for HLS playback in all browsers -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
@@ -155,6 +157,12 @@
         title: "elio 2025 hindi",
         type: "rumble",
         videoId: "v6v3x6g"
+      },
+      {
+        id: 'hls1',
+        title: "Live Stream (HLS Demo)",
+        type: "hls",
+        videoSrc: "https://cdn30093.lefig371jos.com/stream2/i-arch-400/134f3f46783ad768392f05a28a993633/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT21UbFhXTEJ0aZRlTr5UbNRTWX5EbOpmVqllMFFzTEVFMNJTS55keGpWTEVVP:1754670083:152.59.142.105:5112de89965f639cec483c3f5f0e8e74bc54bacfe82d590d813cf01f769053be/index.m3u8"
       }
     ];
 
@@ -169,11 +177,14 @@
       } else if (type === "rumble") {
         // Rumble doesn't provide a public thumbnail API, use a placeholder or custom image
         return "https://via.placeholder.com/320x180?text=Rumble";
+      } else if (type === "hls") {
+        // Use a custom image or HLS placeholder
+        return "https://via.placeholder.com/320x180?text=Live+HLS";
       }
       return "";
     }
 
-    function getEmbed(type, videoId, playlistId) {
+    function getEmbed(type, videoId, playlistId, videoSrc) {
       if (type === "youtube") {
         return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
       } else if (type === "youtube_playlist") {
@@ -182,6 +193,22 @@
         return `<iframe class="video-frame" src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" allowfullscreen></iframe>`;
       } else if (type === "rumble") {
         return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
+      } else if (type === "hls") {
+        // Render a video element with id unique to the card
+        return `<video id="hls-video" class="video-frame" controls autoplay></video>
+          <script>
+            (function() {
+              var video = document.getElementById('hls-video');
+              var src = "${videoSrc}";
+              if(window.Hls && Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+              } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = src;
+              }
+            })();
+          </script>`;
       }
       return "";
     }
@@ -197,7 +224,12 @@
         card.dataset.videoId = video.id;
         if (activeId === video.id) {
           // Show embedded player
-          card.innerHTML = getEmbed(video.type, video.videoId, video.playlistId) +
+          card.innerHTML = getEmbed(
+            video.type,
+            video.videoId,
+            video.playlistId,
+            video.videoSrc
+          ) +
             `<div class="video-info">
               <h4 class="video-title">${video.title}</h4>
             </div>`;
