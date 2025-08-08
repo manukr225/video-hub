@@ -10,31 +10,22 @@
       margin: auto;
       padding-top: 40px;
     }
-
-    video {
-      width: 100%;
-      height: auto;
-      background: black;
-    }
+    video { width: 100%; height: auto; background: black; }
   </style>
 </head>
 <body>
   <div id="video-container">
     <video id="video" autoplay controls></video>
   </div>
-
   <script>
     async function initApp() {
-      // Install polyfills
       shaka.polyfill.installAll();
-
       if (shaka.Player.isBrowserSupported()) {
         const video = document.getElementById('video');
         const player = new shaka.Player(video);
 
-        // Your DASH stream URL
-        const manifestUri = "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Zeetv/default/dash/Zeetv-video=2137600-1052784734347.dash?__hdnea__=st=1754619743~exp=1754706143~acl=/*~hmac=d994beb0326a9f6af4460821a84b3f7b9c582459d0c7e0cd5a7f63159941fd09";
-
+        // Put your DASH stream URL here
+        const manifestUri = "YOUR_DASH_STREAM_URL_HERE";
         try {
           await player.load(manifestUri);
           console.log('The video has now been loaded!');
@@ -45,7 +36,6 @@
         alert('Browser not supported!');
       }
     }
-
     document.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
