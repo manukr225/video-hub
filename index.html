@@ -91,7 +91,6 @@
       color: #aaa;
     }
   </style>
-  <!-- hls.js for HLS playback in all browsers -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
@@ -142,9 +141,9 @@
       },
       {
         id: 'yt5',
-        title: "O Sanam Teri Kasam",
+        title: "O Sanam Teri Kasam Playlist",
         type: "youtube_playlist",
-        videoId: "RDi9F2eGpdm9E"
+        playlistId: "RDi9F2eGpdm9E"
       },
       {
         id: 'yt_playlist1',
@@ -171,7 +170,7 @@
         return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
       } else if (type === "youtube_playlist") {
         // Use the first video thumbnail in the playlist, or a custom image
-        return `https://img.youtube.com/vi/UdsO4SM4wKI/hqdefault.jpg`;
+        return `https://img.youtube.com/vi/i9F2eGpdm9E/hqdefault.jpg`;
       } else if (type === "dailymotion") {
         return `https://www.dailymotion.com/thumbnail/video/${videoId}`;
       } else if (type === "rumble") {
@@ -194,21 +193,21 @@
       } else if (type === "rumble") {
         return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
       } else if (type === "hls") {
-        // Render a video element with id unique to the card
-        return `<video id="hls-video" class="video-frame" controls autoplay></video>
-          <script>
-            (function() {
-              var video = document.getElementById('hls-video');
-              var src = "${videoSrc}";
-              if(window.Hls && Hls.isSupported()) {
-                var hls = new Hls();
-                hls.loadSource(src);
-                hls.attachMedia(video);
-              } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = src;
-              }
-            })();
-          </script>`;
+        // Unique id for HLS video (in case of multiple HLS videos)
+        const hlsId = "hls-video";
+        setTimeout(() => {
+          var video = document.getElementById(hlsId);
+          if (video) {
+            if (window.Hls && Hls.isSupported()) {
+              var hls = new Hls();
+              hls.loadSource(videoSrc);
+              hls.attachMedia(video);
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+              video.src = videoSrc;
+            }
+          }
+        }, 0);
+        return `<video id="${hlsId}" class="video-frame" controls autoplay></video>`;
       }
       return "";
     }
