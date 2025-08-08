@@ -84,6 +84,7 @@
       border: none;
       border-radius: 0;
       display: block;
+      background: #000;
     }
     footer {
       margin-top: 50px;
@@ -155,6 +156,12 @@
         playlistId: "RDRaMkydjJQvY"
       },
       {
+        id: 'yt_playlist2',
+        title: "UdsO4SM4wKI Playlist",
+        type: "youtube_playlist",
+        playlistId: "RDUdsO4SM4wKI"
+      },
+      {
         id: 'rumble1',
         title: "elio 2025 hindi",
         type: "rumble",
@@ -171,7 +178,7 @@
         title: "Star Plus HD Live (DASH)",
         type: "dash",
         videoSrc: "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Plus_HD_BTS/output/dash/Star_Plus_HD_BTS-video=3724000-1052783415005.dash?__hdnea__=st=1754619743~exp=1754706143~acl=/*~hmac=d994beb0326a9f6af4460821a84b3f7b9c582459d0c7e0cd5a7f63159941fd09",
-        thumbnail: "https://via.placeholder.com/320x180?text=Star+Plus+HD+Live" // You can use a custom image link here
+        thumbnail: "https://via.placeholder.com/320x180?text=Star+Plus+HD+Live"
       }
     ];
 
@@ -197,7 +204,7 @@
       return "";
     }
 
-    function getEmbed(type, videoId, playlistId, videoSrc) {
+    function getEmbed(type, videoId, playlistId, videoSrc, uniqueId) {
       if (type === "youtube") {
         return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
       } else if (type === "youtube_playlist") {
@@ -208,7 +215,7 @@
         return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
       } else if (type === "hls") {
         // Unique id for HLS video (in case of multiple HLS videos)
-        const hlsId = "hls-video";
+        const hlsId = `hls-video-${uniqueId}`;
         setTimeout(() => {
           var video = document.getElementById(hlsId);
           if (video) {
@@ -224,12 +231,18 @@
         return `<video id="${hlsId}" class="video-frame" controls autoplay></video>`;
       } else if (type === "dash") {
         // Unique id for DASH video (in case of multiple DASH videos)
-        const dashId = "dash-video";
+        const dashId = `dash-video-${uniqueId}`;
         setTimeout(() => {
           var video = document.getElementById(dashId);
+          // Destroy any existing dash.js player instance
+          if (video && video._dashPlayer && typeof video._dashPlayer.reset === "function") {
+            video._dashPlayer.reset();
+            video._dashPlayer = null;
+          }
           if (video && window.dashjs) {
             var player = dashjs.MediaPlayer().create();
             player.initialize(video, videoSrc, true);
+            video._dashPlayer = player;
           }
         }, 0);
         return `<video id="${dashId}" class="video-frame" controls autoplay></video>`;
@@ -242,7 +255,7 @@
     // Render video cards
     function renderVideos(activeId = null) {
       videoContainer.innerHTML = '';
-      videos.forEach(video => {
+      videos.forEach((video, idx) => {
         const card = document.createElement('div');
         card.className = 'video-card';
         card.dataset.videoId = video.id;
@@ -252,7 +265,8 @@
             video.type,
             video.videoId,
             video.playlistId,
-            video.videoSrc
+            video.videoSrc,
+            idx // uniqueId for HLS/DASH
           ) +
             `<div class="video-info">
               <h4 class="video-title">${video.title}</h4>
