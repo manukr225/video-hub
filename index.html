@@ -33,6 +33,8 @@
       flex-direction: column;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       transition: transform .2s;
+      cursor: pointer;
+      position: relative;
     }
     .video-card:hover {
       transform: scale(1.04);
@@ -43,6 +45,7 @@
       width: 100%;
       height: 180px;
       overflow: hidden;
+      background: #000;
     }
     .video-thumbnail {
       width: 100%;
@@ -75,88 +78,125 @@
       text-align: left;
       color: #00ffff;
     }
+    .video-frame {
+      width: 100%;
+      height: 180px;
+      border: none;
+      border-radius: 0;
+      display: block;
+    }
     footer {
       margin-top: 50px;
       font-size: 14px;
       color: #aaa;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
     }
   </style>
 </head>
 <body>
 
   <h1>🎬 StreamSeva - Video Hub</h1>
-  <p>Enjoy streaming curated YouTube videos</p>
+  <p>Enjoy streaming curated videos right here!</p>
 
-  <div class="video-container">
-    <!-- YouTube Video -->
-    <div class="video-card">
-      <a href="https://www.youtube.com/watch?v=Szx5d2DnOTw" target="_blank" rel="noopener">
-        <div class="thumbnail-container">
-          <img src="https://img.youtube.com/vi/Szx5d2DnOTw/hqdefault.jpg" alt="SANGING DISOM P" class="video-thumbnail"/>
-          <div class="play-button">&#9658;</div>
-        </div>
-        <div class="video-info">
-          <h4 class="video-title">SANGING DISOM P</h4>
-        </div>
-      </a>
-    </div>
-    <!-- Dailymotion Video -->
-    <div class="video-card">
-      <a href="https://www.dailymotion.com/video/kL1VdKbz3eJNDAVHs" target="_blank" rel="noopener">
-        <div class="thumbnail-container">
-          <img src="https://www.dailymotion.com/thumbnail/video/kL1VdKbz3eJNDAVHs" alt="6 rules" class="video-thumbnail"/>
-          <div class="play-button">&#9658;</div>
-        </div>
-        <div class="video-info">
-          <h4 class="video-title">6 rules</h4>
-        </div>
-      </a>
-    </div>
-    <!-- YouTube Video 2 -->
-    <div class="video-card">
-      <a href="https://www.youtube.com/watch?v=UIjOVA1GPrc" target="_blank" rel="noopener">
-        <div class="thumbnail-container">
-          <img src="https://img.youtube.com/vi/UIjOVA1GPrc/hqdefault.jpg" alt="ESEL JOHA | FULL VIDEO" class="video-thumbnail"/>
-          <div class="play-button">&#9658;</div>
-        </div>
-        <div class="video-info">
-          <h4 class="video-title">ESEL JOHA | FULL VIDEO</h4>
-        </div>
-      </a>
-    </div>
-    <!-- YouTube Video 3 -->
-    <div class="video-card">
-      <a href="https://www.youtube.com/watch?v=i9F2eGpdm9E" target="_blank" rel="noopener">
-        <div class="thumbnail-container">
-          <img src="https://img.youtube.com/vi/i9F2eGpdm9E/hqdefault.jpg" alt="O Sanam Teri Kasam" class="video-thumbnail"/>
-          <div class="play-button">&#9658;</div>
-        </div>
-        <div class="video-info">
-          <h4 class="video-title">O Sanam Teri Kasam</h4>
-        </div>
-      </a>
-    </div>
-    <!-- Rumble Video -->
-    <div class="video-card">
-      <a href="https://rumble.com/v6v2q9c" target="_blank" rel="noopener">
-        <div class="thumbnail-container">
-          <img src="https://rumble.com/embed/v6v2q9c/thumbnail.jpg" alt="Rumble Sample" class="video-thumbnail"/>
-          <div class="play-button">&#9658;</div>
-        </div>
-        <div class="video-info">
-          <h4 class="video-title">Rumble Sample</h4>
-        </div>
-      </a>
-    </div>
+  <div class="video-container" id="videoContainer">
+    <!-- Video cards will be injected by JavaScript -->
   </div>
-  
+
   <footer>
     © 2025 StreamSeva. All rights reserved.
   </footer>
 
+  <script>
+    // Video data array
+    const videos = [
+      {
+        id: 'yt1',
+        title: "SANGING DISOM P",
+        type: "youtube",
+        videoId: "Szx5d2DnOTw"
+      },
+      {
+        id: 'dm1',
+        title: "6 rules",
+        type: "dailymotion",
+        videoId: "kL1VdKbz3eJNDAVHs"
+      },
+      {
+        id: 'yt2',
+        title: "ESEL JOHA | FULL VIDEO",
+        type: "youtube",
+        videoId: "UIjOVA1GPrc"
+      },
+      {
+        id: 'yt3',
+        title: "O Sanam Teri Kasam",
+        type: "youtube",
+        videoId: "i9F2eGpdm9E"
+      },
+      {
+        id: 'rumble1',
+        title: "Rumble Sample",
+        type: "rumble",
+        videoId: "v6v2q9c"
+      }
+    ];
+
+    function getThumbnail(type, videoId) {
+      if (type === "youtube") {
+        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      } else if (type === "dailymotion") {
+        return `https://www.dailymotion.com/thumbnail/video/${videoId}`;
+      } else if (type === "rumble") {
+        // Rumble doesn't provide a public thumbnail API, use a placeholder or custom image
+        return "https://via.placeholder.com/320x180?text=Rumble";
+      }
+      return "";
+    }
+
+    function getEmbed(type, videoId) {
+      if (type === "youtube") {
+        return `<iframe class="video-frame" src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen></iframe>`;
+      } else if (type === "dailymotion") {
+        return `<iframe class="video-frame" src="https://www.dailymotion.com/embed/video/${videoId}?autoplay=1" allowfullscreen></iframe>`;
+      } else if (type === "rumble") {
+        return `<iframe class="video-frame" src="https://rumble.com/embed/${videoId}/?autoplay=2" allowfullscreen></iframe>`;
+      }
+      return "";
+    }
+
+    const videoContainer = document.getElementById('videoContainer');
+
+    // Render video cards
+    function renderVideos(activeId = null) {
+      videoContainer.innerHTML = '';
+      videos.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.dataset.videoId = video.id;
+        if (activeId === video.id) {
+          // Show embedded player
+          card.innerHTML = getEmbed(video.type, video.videoId) +
+            `<div class="video-info">
+              <h4 class="video-title">${video.title}</h4>
+            </div>`;
+        } else {
+          // Show thumbnail
+          card.innerHTML = `
+            <div class="thumbnail-container">
+              <img src="${getThumbnail(video.type, video.videoId)}" alt="${video.title}" class="video-thumbnail"/>
+              <div class="play-button">&#9658;</div>
+            </div>
+            <div class="video-info">
+              <h4 class="video-title">${video.title}</h4>
+            </div>
+          `;
+          card.addEventListener('click', () => renderVideos(video.id));
+        }
+        videoContainer.appendChild(card);
+      });
+    }
+
+    // Initial render
+    renderVideos();
+  </script>
 </body>
 </html>
