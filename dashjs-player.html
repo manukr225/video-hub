@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DASH Video Player (dash.js)</title>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+</head>
+<body>
+  <video id="videoPlayer" width="800" height="450" controls autoplay></video>
+  <script>
+    var url = "YOUR_DASH_STREAM_URL_HERE";
+    var player = dashjs.MediaPlayer().create();
+    player.initialize(document.getElementById('videoPlayer'), url, true);
+  </script>
+</body>
+</html>
