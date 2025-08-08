@@ -24,22 +24,65 @@
       gap: 20px;
       margin-top: 30px;
     }
-    .video-frame {
+    .video-card {
       width: 320px;
+      background: #222;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: transform .2s;
+    }
+    .video-card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 16px rgba(0,255,255,0.3);
+    }
+    .thumbnail-container {
+      position: relative;
+      width: 100%;
       height: 180px;
-      border: 2px solid #00ffff;
-      border-radius: 10px;
       overflow: hidden;
     }
-    iframe {
+    .video-thumbnail {
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
+      display: block;
+    }
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: rgba(255,255,255,0.9);
+      background: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      padding: 8px 16px;
+      pointer-events: none;
+    }
+    .video-info {
+      padding: 12px;
+      color: #fff;
+      text-align: left;
+      min-height: 48px;
+    }
+    .video-title {
+      margin: 0;
+      font-size: 1.08em;
+      font-weight: 600;
+      text-align: left;
+      color: #00ffff;
     }
     footer {
       margin-top: 50px;
       font-size: 14px;
       color: #aaa;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
     }
   </style>
 </head>
@@ -49,48 +92,65 @@
   <p>Enjoy streaming curated YouTube videos</p>
 
   <div class="video-container">
-    <!-- Video 1 -->
-    <div class="video-frame">
-      <iframe src="https://www.youtube.com/embed/Szx5d2DnOTw" allowfullscreen></iframe>
+    <!-- YouTube Video -->
+    <div class="video-card">
+      <a href="https://www.youtube.com/watch?v=Szx5d2DnOTw" target="_blank" rel="noopener">
+        <div class="thumbnail-container">
+          <img src="https://img.youtube.com/vi/Szx5d2DnOTw/hqdefault.jpg" alt="SANGING DISOM P" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">SANGING DISOM P</h4>
+        </div>
+      </a>
     </div>
-
-
-<!-- dailymotion videos -->
-
-    <div class="video-container">
-    <iframe 
-        frameborder="0"
-        width="100%"
-        height="300"
-        src="https://www.dailymotion.com/embed/video/kL1VdKbz3eJNDAVHs"
-        allowfullscreen>
-    </iframe>
-</div>
-
-    <!-- Video 2 -->
-    <div class="video-frame">
-      <iframe src="https://www.youtube.com/embed/UIjOVA1GPrc" allowfullscreen></iframe>
+    <!-- Dailymotion Video -->
+    <div class="video-card">
+      <a href="https://www.dailymotion.com/video/kL1VdKbz3eJNDAVHs" target="_blank" rel="noopener">
+        <div class="thumbnail-container">
+          <img src="https://www.dailymotion.com/thumbnail/video/kL1VdKbz3eJNDAVHs" alt="6 rules" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">6 rules</h4>
+        </div>
+      </a>
     </div>
-
-    <!-- Video 3 -->
-    <div class="video-frame">
-      <iframe src="https://www.youtube.com/embed/i9F2eGpdm9E" allowfullscreen></iframe>
+    <!-- YouTube Video 2 -->
+    <div class="video-card">
+      <a href="https://www.youtube.com/watch?v=UIjOVA1GPrc" target="_blank" rel="noopener">
+        <div class="thumbnail-container">
+          <img src="https://img.youtube.com/vi/UIjOVA1GPrc/hqdefault.jpg" alt="ESEL JOHA | FULL VIDEO" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">ESEL JOHA | FULL VIDEO</h4>
+        </div>
+      </a>
     </div>
-  </div>
-
-<!-- Video 3.5 -->
-<div class="video-frame">
-  <iframe 
-    src="https://rumble.com/embed/v6v2q9c/?pub=4mhwu4" 
-    allowfullscreen>
-  </iframe>
-</div>
-
-
-
-<!-- Video 4 -->
-    <div class="video-frame">
-      <iframe src="<iframe src="https://rumble.com/embed/v6v2q9c/?pub=4mhwu4" width="100%" height="500" frameborder="0"></iframe>" allowfullscreen></iframe>
+    <!-- YouTube Video 3 -->
+    <div class="video-card">
+      <a href="https://www.youtube.com/watch?v=i9F2eGpdm9E" target="_blank" rel="noopener">
+        <div class="thumbnail-container">
+          <img src="https://img.youtube.com/vi/i9F2eGpdm9E/hqdefault.jpg" alt="O Sanam Teri Kasam" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">O Sanam Teri Kasam</h4>
+        </div>
+      </a>
+    </div>
+    <!-- Rumble Video -->
+    <div class="video-card">
+      <a href="https://rumble.com/v6v2q9c" target="_blank" rel="noopener">
+        <div class="thumbnail-container">
+          <img src="https://rumble.com/embed/v6v2q9c/thumbnail.jpg" alt="Rumble Sample" class="video-thumbnail"/>
+          <div class="play-button">&#9658;</div>
+        </div>
+        <div class="video-info">
+          <h4 class="video-title">Rumble Sample</h4>
+        </div>
+      </a>
     </div>
   </div>
   
